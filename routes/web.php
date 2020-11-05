@@ -14,4 +14,4 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/test','test\TestController@test');//测试当前方法
+Route::get('test','test\TestController@test');//测试当前方法
