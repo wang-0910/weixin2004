@@ -14,3 +14,4 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/test','test\TestConroller@test');//测试当前方法
