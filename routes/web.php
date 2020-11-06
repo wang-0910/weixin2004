@@ -16,4 +16,5 @@ Route::get('/', function () {
 });
 
 //Route::get('/Token','test\TestController@token');//测试接入
-Route::get('/index','WxController@index');//测试接入
+Route::get('/index','WxController@index');//测试接入、
+Route::get('/token',"WxController@getAccressToken");//获取access_token
