@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
-
+use Log;
 class WxController extends Controller
 {
     /**
@@ -26,7 +26,7 @@ class WxController extends Controller
             //接收数据
             $xml_str = file_get_contents("php://input");
             //写入日志
-            file_put_contents('wx_event.log',$xml_str);
+            Log::info($xml_str);
             //把xml转化为对象或者数组
             $data = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
             
