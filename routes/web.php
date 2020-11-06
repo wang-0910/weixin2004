@@ -15,4 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/Token','test\TestController@token');//测试接入
+//Route::get('/Token','test\TestController@token');//测试接入
+//Route::get('/index','WxController@index');//测试接入
