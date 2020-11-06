@@ -28,16 +28,16 @@ class WxController extends Controller
             //写入日志
             Log::info($xml_str);
             //把xml转化为对象或者数组
-            $data = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
+        //     $data = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
             
-           $xml = '<xml>
-                        <ToUserName><![CDATA[toUser]]></ToUserName>
-                        <FromUserName><![CDATA[fromUser]]></FromUserName>
-                        <CreateTime>'.time().'</CreateTime>
-                        <MsgType><![CDATA[text]]></MsgType>
-                        <Content><![CDATA[你好]]></Content>
-                </xml>';
-                    echo $xml;
+        //    $xml = '<xml>
+        //                 <ToUserName><![CDATA[toUser]]></ToUserName>
+        //                 <FromUserName><![CDATA[fromUser]]></FromUserName>
+        //                 <CreateTime>'.time().'</CreateTime>
+        //                 <MsgType><![CDATA[text]]></MsgType>
+        //                 <Content><![CDATA[你好]]></Content>
+        //         </xml>';
+        //             echo $xml;
         }else{
             echo '';
         }  
