@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\Redis;
 
 class WxController extends Controller
 {
-    public function index(){
+    /**
+     * 接入  
+     */
+    public function wxEvent(){
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
@@ -19,9 +22,9 @@ class WxController extends Controller
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){
-            echo $_GET['echostr'];
+           echo '';
         }else{
-            echo "1111";
+            echo '';
         }  
     }
     /**
@@ -46,4 +49,8 @@ class WxController extends Controller
             echo $response;
        
     }
+    /**
+     * 推送事件
+     */
+    
 }
