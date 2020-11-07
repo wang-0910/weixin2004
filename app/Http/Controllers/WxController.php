@@ -8,7 +8,7 @@ use Log;
 class WxController extends Controller
 {
     /**
-     * 接入  
+     * 接入  消息推送
      */
     public function wxEvent(){
         $signature = $_GET["signature"];
@@ -27,17 +27,7 @@ class WxController extends Controller
             $xml_str = file_get_contents("php://input");
             //写入日志
             Log::info($xml_str);
-            //把xml转化为对象或者数组
-        //     $data = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
             
-        //    $xml = '<xml>
-        //                 <ToUserName><![CDATA[toUser]]></ToUserName>
-        //                 <FromUserName><![CDATA[fromUser]]></FromUserName>
-        //                 <CreateTime>'.time().'</CreateTime>
-        //                 <MsgType><![CDATA[text]]></MsgType>
-        //                 <Content><![CDATA[你好]]></Content>
-        //         </xml>';
-        //             echo $xml;
         }else{
             echo '';
         }  
@@ -67,7 +57,14 @@ class WxController extends Controller
        
     }
     /**
-     * 推送事件
+     * 关注并回复
      */
-    
+    public function checkAttention(){
+        
+        //接收数据
+        $file = file_get_contents("php://input");
+        Log::info("----------".$file);
+        
+        
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 }

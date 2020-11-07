@@ -18,3 +18,4 @@ Route::get('/', function () {
 //Route::get('/Token','test\TestController@token');//测试接入
 Route::post('/index','WxController@wxEvent');//测试接入、
 Route::get('/token',"WxController@getAccressToken");//获取access_token
+Route::get('/atten',"WxController@checkAttention");//关注回复
