@@ -27,11 +27,11 @@ class WxController extends Controller
             $xml_str = file_get_contents("php://input");
             //写入日志
             Log::info($xml_str);
-            $obj = simplexml_load_string($xml,"SimpleXMLElement", LIBXML_NOCDATA);
+            $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
             if($obj->MsgType=='event'){
                 if($obj->Event == "subscribe"){
                    $content = "谢谢你的关注";
-                   
+
                    $info = $this->checkText($obj,$content);
 
                 }
