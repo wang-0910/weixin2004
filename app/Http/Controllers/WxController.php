@@ -77,7 +77,7 @@ class WxController extends Controller
                     <FromUserName><![CDATA[%s]]></FromUserName>
                     <CreateTime>%s</CreateTime>
                     <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[你好]]></Content>
+                    <Content><![CDATA[".$content."]]></Content>
                 </xml>
         ";
         $info = sprintf($xml,$ToUserName,$FromUserName,$CreateTime,$MsgType,$content);
