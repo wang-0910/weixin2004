@@ -27,7 +27,16 @@ class WxController extends Controller
             $xml_str = file_get_contents("php://input");
             //写入日志
             Log::info($xml_str);
-            
+            $obj = simplexml_load_string($xml,"SimpleXMLElement", LIBXML_NOCDATA);
+            if($obj->MsgType=='event'){
+                if($obj->Event == "subscribe"){
+                   $content = "谢谢你的关注";
+                   
+                   $info = $this->checkText($obj,$content);
+
+                }
+           
+            }
         }else{
             echo '';
         }  
@@ -56,15 +65,23 @@ class WxController extends Controller
             echo $response;
        
     }
-    /**
-     * 关注并回复
-     */
-    public function checkAttention(){
-        
-        //接收数据
-        $file = file_get_contents("php://input");
-        Log::info("----------".$file);
-        
-        
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+ 
+    public function checkText($obj,$content){
+        $ToUserName = $obj->FromUserName;
+        $FromUserName = $obj->ToUserName;
+        $CreateTime = time();
+        $MsgType = 'text';
+        $xml = "
+                <xml>
+                    <ToUserName><![CDATA[%s]]></ToUserName>
+                    <FromUserName><![CDATA[%s]]></FromUserName>
+                    <CreateTime>%s</CreateTime>
+                    <MsgType><![CDATA[text]]></MsgType>
+                    <Content><![CDATA[你好]]></Content>
+                </xml>
+        ";
+        $info = sprintf($xml,$ToUserName,$FromUserName,$CreateTime,$MsgType,$content);
+        log::info($info);
+        echo $info; 
+    }
 }
