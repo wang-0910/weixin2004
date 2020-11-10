@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Log;
+use GuzzleHttp\Client;
 class WxController extends Controller
 {
     /**
@@ -43,6 +44,7 @@ class WxController extends Controller
 
        
     }
+
     /**
      * 获取access_token
      */
@@ -84,4 +86,44 @@ class WxController extends Controller
         log::info($info);
         echo $info; 
     }
+
+
+   public function create_menu(){
+       //获取token
+       $access_token = $this->getAccressToken();
+
+        $url =  "   ".$access_token;
+        $menu = '{
+            "button":[
+            {	
+                 "type":"click",
+                 "name":"今日歌曲",
+                 "key":"V1001_TODAY_MUSIC"
+             },
+             {
+                  "name":"菜单",
+                  "sub_button":[
+                  {	
+                      "type":"view",
+                      "name":"搜索",
+                      "url":"http://www.soso.com/"
+                   },
+                   {
+                      "type":"click",
+                      "name":"赞一下我们",
+                      "key":"V1001_GOOD"
+                   }]
+              }]
+        }';
+        // echo $menu;
+        $client = new Client();
+        $response = $client->request('POST',$url,[
+            'verify' =>false,
+            'body'=>json_encode($menu)
+        ]);
+
+   }
+
+  
+    
 }
