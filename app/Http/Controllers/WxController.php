@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use Log;
 use GuzzleHttp\Client;
+use App\UserModel;
 class WxController extends Controller
 {
     /**
@@ -23,17 +24,22 @@ class WxController extends Controller
         $tmpStr = sha1( $tmpStr );
 
         if( $tmpStr == $signature ){   //验证消息
-
+            $access_token = $this->getAccessToken();
             //接收数据
             $xml_str = file_get_contents("php://input");
             //写入日志
             Log::info($xml_str);
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
+            $openid = $postarray->FromUserName;//获取发送方的 openid
+            $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
+            Log::info($url);
+            $user = json_decode($this->http_get($url),true);
+            $user_model = new UserModel();
             if($obj->MsgType=='event'){
                 if($obj->Event == "subscribe"){
                    $content = "谢谢你的关注";
-
                    $info = $this->checkText($obj,$content);
+                   
 
                 }
            
@@ -48,26 +54,38 @@ class WxController extends Controller
     /**
      * 获取access_token
      */
-    public function getAccressToken(){
-        $key="1234";
-        $response = Redis::get($key);
-        if(empty($response)){
-            echo "没有缓存";
-            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSEC')."";
-            // echo $url;
-            $response = file_get_contents($url);
-            
-            $response = json_decode($response,true);
-            $response = $response['access_token'];
-            Redis::set($key,$response);
-            Redis::expire($key,3600);
-
-
+    public function getAccessToken(){
+        $key = 'wx:access_token';
+        
+        //检查是否有token
+        $token = Redis::get($key);
+        if($token){
+        return  $token;
+        }else{
+        echo "无缓存";
+        
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSEC')."";
+        $response = file_get_contents($url);
+        //echo $response;
+        $data = json_decode($response,true);
+        $token=$data['access_token'];
+        //保存redis
+        
+        Redis::set($key,$token);
+        Redis::expire($key,3600);
+        
+        
         }
-            echo $response;
-       
-    }
+        return $token;
+        
+        
+        
+        
+        }
  
+    /**
+     * 文本消息
+     */
     public function checkText($obj,$content){
         $ToUserName = $obj->FromUserName;
         $FromUserName = $obj->ToUserName;
@@ -87,44 +105,64 @@ class WxController extends Controller
         echo $info; 
     }
 
-
+/**
+ * 自定义菜单
+ */
    public function create_menu(){
        //获取token
-       $access_token = $this->getAccressToken();
+       $access_token = $this->getAccessToken();
 
         $url =  "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
-        $menu = ' {
-            "button":[
-            {	
-                 "type":"click",
-                 "name":"今日歌曲",
-                 "key":"V1001_TODAY_MUSIC"
-             },
-             {
-                  "name":"菜单",
-                  "sub_button":[
-                  {	
-                      "type":"view",
-                      "name":"搜索",
-                      "url":"http://www.baidu.com/"
-                   },
-                   
-                   {
-                      "type":"click",
-                      "name":"赞一下我们",
-                      "key":"V1001_GOOD"
-                   }]
-              }]
-        }';
+        $menu = [
+            "button"=>
+            [
+                [
+                    "type"=>"view",
+                    "name"=> "搜索",
+                    "url"=>"http://www.baidu.com"
+                ],
+
+                [
+                    "name" => "娱乐",
+                    "sub_button" => 
+                [
+                    [
+                        "type" => "view",
+                        "name" => "视频",
+                        "url" =>  "http://v.qq.com"
+                    ], 
+
+                    [
+                        "type" => "view",
+                        "name" => "音乐",
+                        "url" => "https://music.163.com"
+                    ]
+                ]
+                ]
+            ]
+    ];
         // echo $menu;
         $client = new Client();
         $response = $client->request('POST',$url,[
             'verify' =>false,
-            'body'=>json_encode($menu)
+            'body'=>json_encode($menu,JSON_UNESCAPED_UNICODE)
         ]);
+            dd($response);
 
    }
 
   
+   public function http_get($url){
+    //        Log::info("--------------------123");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);//向那个url地址上面发送
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);//设置发送http请求时需不需要证书
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//设置发送成功后要不要输出1 不输出，0输出
+            $output = curl_exec($ch);//执行
+            curl_close($ch);    //关闭
+            return $output;
+     }
+    
     
 }

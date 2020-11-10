@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 //Route::get('/Token','test\TestController@token');//测试接入
 Route::post('/index','WxController@wxEvent');//测试接入、
-Route::get('/token',"WxController@getAccressToken");//获取access_token
+Route::any('/token',"WxController@getAccressToken");//获取access_token
 Route::get('/create_menu','WxController@create_menu');//添加菜单
 
  
