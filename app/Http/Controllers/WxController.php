@@ -92,8 +92,8 @@ class WxController extends Controller
        //获取token
        $access_token = $this->getAccressToken();
 
-        $url =  "   ".$access_token;
-        $menu = '{
+        $url =  "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=".$access_token;
+        $menu = ' {
             "button":[
             {	
                  "type":"click",
@@ -108,6 +108,7 @@ class WxController extends Controller
                       "name":"搜索",
                       "url":"http://www.baidu.com/"
                    },
+                   
                    {
                       "type":"click",
                       "name":"赞一下我们",
