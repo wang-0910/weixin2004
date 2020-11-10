@@ -30,7 +30,7 @@ class WxController extends Controller
             //写入日志
             Log::info($xml_str);
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
-            $openid = $postarray->FromUserName;//获取发送方的 openid
+            $openid = $obj->FromUserName;//获取发送方的 openid
             $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
             Log::info($url);
             $user = json_decode($this->http_get($url),true);
