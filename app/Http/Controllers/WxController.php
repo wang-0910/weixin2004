@@ -32,15 +32,27 @@ class WxController extends Controller
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
             $openid = $obj->FromUserName;//获取发送方的 openid
             $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
-            Log::info($url);
+            // Log::info($url);
             $user = json_decode($this->http_get($url),true);
             $user_model = new UserModel();
             if($obj->MsgType=='event'){
                 if($obj->Event == "subscribe"){
                    $content = "谢谢你的关注";
                    $info = $this->checkText($obj,$content);
-                   
-
+                   $data = [
+                       "subscribe" => $user['subscribe'],
+                       "openid" => $user['openid'],
+                       "nickname" => $user['nickname'],
+                       "sex" => $user['sex'],
+                       "city" => $user['city'],
+                       "country" => $user['country'],
+                       "province" => $user['province'],
+                       "language" => $user['language'],
+                       "headimgurl" => $user['headimgurl'],
+                       "subcribe_time" => $user['subcribe_time'],
+                       "subcribe_scene" => $user['subcribe_scene'],
+                   ];
+                   $user_model->inster($data);
                 }
            
             }
