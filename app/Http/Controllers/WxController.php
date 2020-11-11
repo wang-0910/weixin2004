@@ -40,7 +40,7 @@ class WxController extends Controller
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
             //天气
             if($obj->MsgType=="text"){
-                if($obj->$content=="天气"){
+                if($obj->content=="天气"){
                     $content = $this->weather();
                     $this->checkText($obj,$content);
                 }
