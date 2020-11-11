@@ -49,8 +49,8 @@ class WxController extends Controller
                        "province" => $user['province'],
                        "language" => $user['language'],
                        "headimgurl" => $user['headimgurl'],
-                       "subcribe_time" => $user['subcribe_time'],
-                       "subcribe_scene" => $user['subcribe_scene'],
+                       "subscribe_time" => $user['subscribe_time'],
+                       "subscribe_scene" => $user['subscribe_scene'],
                    ];
                    $user_model->inster($data);
                 }
