@@ -36,7 +36,15 @@ class WxController extends Controller
             $xml_str = file_get_contents("php://input");
             //写入日志
             Log::info($xml_str);
+
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
+            //天气
+            if($obj->MsgType=="text"){
+                if($obj->$content=="天气"){
+                    $content = $this->weather();
+                    $this->checkText($obj,$content);
+                }
+            }
             $openid = $obj->FromUserName;//获取发送方的 openid
             $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
             // Log::info($url);
@@ -81,11 +89,25 @@ class WxController extends Controller
     }
 
 
-    /**
+    /** 
      * 天气
      */
     public function weather(){
+        $url = "http://api.k780.com:88/?app=weather.future&weaid=beijing&&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json";        $weather = file_get_contents($url);
+        
+        $weather = json_decode($weather,true);
+        print_r($weather);
 
+        if($weather['success']==1){
+            $content = "";
+            foreach($weather['result'] as $k=>$v){
+                $content .= "\n"."地区:" . $v['citynm'] .","."日期:" . $v['days'] . $v['week'] .","."温度:" . $v['temperature'] .","."风速:" . $v['winp'] .","."天气:" . $v['weather'];
+            }
+
+        }
+        return $content;
+
+        
     }
 
 
