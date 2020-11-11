@@ -39,11 +39,11 @@ class WxController extends Controller
             Log::info($xml_str);
 
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
-           // dd($obj);die;
+        //    dd($obj);die;
             //天气
             if($obj->MsgType=="text"){
                // echo '111';die;
-                if($obj->content=="天气"){
+                if($obj->Content=="天气"){
                     $content = $this->weather();
                     $this->checkText($obj,$content);
                 }
@@ -96,7 +96,6 @@ class WxController extends Controller
      * 天气
      */
     public function weather(){
-        echo '12';die;
         $url = "http://api.k780.com:88/?app=weather.future&weaid=beijing&&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json";        $weather = file_get_contents($url);
         $weather = file_get_contents($url);
         $weather = json_decode($weather,true);
