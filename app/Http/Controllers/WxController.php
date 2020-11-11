@@ -40,15 +40,17 @@ class WxController extends Controller
             $openid = $obj->FromUserName;//获取发送方的 openid
             $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
             // Log::info($url);
-            $user = json_decode($this->http_get($url),true);
+           
             $user_model = new UserModel();
             if($obj->MsgType=='event'){
                 if($obj->Event == "subscribe"){
-                    $user = $user_model->where('openid','=',$user['openid'])->first();
+                    $user = $user_model->where('openid','=',$openid)->first();
+                   
                     if($user){
                         $content = "欢迎回来";
                         $info = $this->checkText($obj,$content);
                     }else{
+                         $user = json_decode($this->http_get($url),true);
                         $content = "谢谢你的关注";
                         $info = $this->checkText($obj,$content);
                         $data = [
@@ -77,6 +79,15 @@ class WxController extends Controller
 
        
     }
+
+
+    /**
+     * 天气
+     */
+    public function weather(){
+
+    }
+
 
     /**
      * 获取access_token
@@ -174,7 +185,7 @@ class WxController extends Controller
             'verify' =>false,
             'body'=>json_encode($menu,JSON_UNESCAPED_UNICODE)
         ]);
-            dd($response);
+        
 
    }
 
