@@ -52,7 +52,7 @@ class WxController extends Controller
                        "subscribe_time" => $user['subscribe_time'],
                        "subscribe_scene" => $user['subscribe_scene'],
                    ];
-                   $user_model->inster($data);
+                   $user_model->insert($data);
                 }
            
             }
