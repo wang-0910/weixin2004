@@ -10,7 +10,14 @@ use App\UserModel;
 class WxController extends Controller
 {
     /**
-     * 接入  消息推送
+     * 接入
+     */
+    public function index(){
+        $this->wxEvent();//接入
+        $this->create_menu();//菜单
+    }
+    /**
+     *  消息推送
      */
     public function wxEvent(){
         $signature = $_GET["signature"];
@@ -37,24 +44,32 @@ class WxController extends Controller
             $user_model = new UserModel();
             if($obj->MsgType=='event'){
                 if($obj->Event == "subscribe"){
-                   $content = "谢谢你的关注";
-                   $info = $this->checkText($obj,$content);
-                   $data = [
-                       "subscribe" => $user['subscribe'],
-                       "openid" => $user['openid'],
-                       "nickname" => $user['nickname'],
-                       "sex" => $user['sex'],
-                       "city" => $user['city'],
-                       "country" => $user['country'],
-                       "province" => $user['province'],
-                       "language" => $user['language'],
-                       "headimgurl" => $user['headimgurl'],
-                       "subscribe_time" => $user['subscribe_time'],
-                       "subscribe_scene" => $user['subscribe_scene'],
-                   ];
-                   $user_model->insert($data);
+                    $user = $user_model->where('openid','=',$user['openid'])->first();
+                    if($user){
+                        $content = "欢迎回来";
+                        $info = $this->checkText($obj,$content);
+                    }else{
+                        $content = "谢谢你的关注";
+                        $info = $this->checkText($obj,$content);
+                        $data = [
+                            "subscribe" => $user['subscribe'],
+                            "openid" => $user['openid'],
+                            "nickname" => $user['nickname'],
+                            "sex" => $user['sex'],
+                            "city" => $user['city'],
+                            "country" => $user['country'],
+                            "province" => $user['province'],
+                            "language" => $user['language'],
+                            "headimgurl" => $user['headimgurl'],
+                            "subscribe_time" => $user['subscribe_time'],
+                            "subscribe_scene" => $user['subscribe_scene'],
+                        ];
+                        $user_model->insert($data);
+                    }
+
+                   
                 }
-           
+                
             }
         }else{
             echo '';
@@ -163,7 +178,9 @@ class WxController extends Controller
 
    }
 
-  
+  /**
+   * 过滤http协议
+   */
    public function http_get($url){
     //        Log::info("--------------------123");
             $ch = curl_init();
