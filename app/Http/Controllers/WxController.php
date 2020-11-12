@@ -56,6 +56,7 @@ class WxController extends Controller
                     "add_time"=>$obj->CreateTime,
                     "media_url"=>$obj->PicUrl,
                      "msg_id" => $obj->MsgId,
+                     "media_id"=>$obj->MediaId,
                      "media_type"=>$obj->MsgType
                 ];
                     $media = Media::insert($data);
