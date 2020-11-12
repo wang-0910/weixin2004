@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redis;
 use Log;
 use GuzzleHttp\Client;
 use App\UserModel;
-use App\media;
+use App\Media;
 class WxController extends Controller
 {
     /**
