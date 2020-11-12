@@ -64,7 +64,7 @@ class WxController extends Controller
                 $data[] = [
                     "openid" => $obj->ToUserName,
                     "add_time"=>$obj->CreateTime,
-                    "msg_type"=>$obj->MsgType,
+                    "media_type"=>$obj->MsgType,
                     "media_id"=>$obj->MediaId,
                     'thumb' => $obj->ThumbMediaId,
                     'msg_id'=>$obj->MsgId
@@ -74,7 +74,7 @@ class WxController extends Controller
                 $data[] = [
                     "openid" => $obj->ToUserName,
                     "add_time"=>$obj->CreateTime,
-                    "msg_type"=>$obj->MsgType,
+                    "media_type"=>$obj->MsgType,
                     "media_id"=>$obj->MediaId,
                     'msg_id'=>$obj->MsgId,
                     'format'=>$obj->Format,
@@ -140,11 +140,8 @@ class WxController extends Controller
      * 新增素材
      */
 
-     public function material(Request $request){
-         $access_token = $this->getAccessToken();
-         $type = 'image';
-         $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$access_token."&type=".$type;
-         
+     public function material($media_id){
+        
 
      }
      
