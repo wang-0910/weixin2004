@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redis;
 use Log;
 use GuzzleHttp\Client;
 use App\UserModel;
+use App\media;
 class WxController extends Controller
 {
     /**
@@ -41,13 +42,56 @@ class WxController extends Controller
             $obj = simplexml_load_string($xml_str,"SimpleXMLElement", LIBXML_NOCDATA);
         //    dd($obj);die;
             //天气
+             $data = [];
             if($obj->MsgType=="text"){
                // echo '111';die;
                 if($obj->Content=="天气"){
                     $content = $this->weather();
                     $this->checkText($obj,$content);
                 }
+            } else if ($obj->MsgType=="image"){
+               
+                $data[] = [
+                    "openid" =>$obj->FormUserName,
+                    "add_time"=>$obj->CreateTime,
+                    "media_url"=>$obj->PicUrl,
+                     "msg_id" => $obj->MsgId,
+                     "media_type"=>$obj->MsgType
+                ];
+                    $media = Media::insert($data);
+            }else if($obj->MsgType=='video'){
+                $data[] = [
+                    "openid" => $obj->FromUserName,
+                    "add_time"=>$obj->CreateTime,
+                    "msg_type"=>$obj->MsgType,
+                    "media_id"=>$obj->MediaId,
+                    'thumb' => $obj->ThumbMediaId,
+                    'msg_id'=>$obj->MsgId
+                ];
+                    $media = Media::insert($data);
+            }else if($obj->MsgType=='voice'){
+                $data[] = [
+                    "openid" => $obj->FromUserName,
+                    "add_time"=>$obj->CreateTime,
+                    "msg_type"=>$obj->MsgType,
+                    "media_id"=>$obj->MediaId,
+                    'msg_id'=>$obj->MsgId,
+                    'format'=>$obj->Format,
+                    'recognition' => $obj->Recognition
+
+                ];
+                    $media = Media::insert($data);
             }
+
+
+
+
+
+
+
+
+
+
             $openid = $obj->FromUserName;//获取发送方的 openid
             $url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=" . $access_token . "&openid=" . $openid . "&lang=zh_CN";
             // Log::info($url);
@@ -91,6 +135,18 @@ class WxController extends Controller
        
     }
 
+    /**
+     * 新增素材
+     */
+
+     public function material(Request $request){
+         $access_token = $this->getAccessToken();
+         $type = 'image';
+         $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=".$access_token."&type=".$type;
+         
+
+     }
+     
 
     /** 
      * 天气
@@ -108,11 +164,10 @@ class WxController extends Controller
             }
             return $content;
         }
-    
-       
 
         
     }
+
 
 
     /**
