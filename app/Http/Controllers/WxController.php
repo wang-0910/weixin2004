@@ -52,7 +52,7 @@ class WxController extends Controller
             } else if ($obj->MsgType=="image"){
                
                 $data[] = [
-                    "openid" =>$obj->FormUserName,
+                    "openid" =>$obj->ToUserName,
                     "add_time"=>$obj->CreateTime,
                     "media_url"=>$obj->PicUrl,
                      "msg_id" => $obj->MsgId,
@@ -62,7 +62,7 @@ class WxController extends Controller
                     $media = Media::insert($data);
             }else if($obj->MsgType=='video'){
                 $data[] = [
-                    "openid" => $obj->FromUserName,
+                    "openid" => $obj->ToUserName,
                     "add_time"=>$obj->CreateTime,
                     "msg_type"=>$obj->MsgType,
                     "media_id"=>$obj->MediaId,
@@ -72,7 +72,7 @@ class WxController extends Controller
                     $media = Media::insert($data);
             }else if($obj->MsgType=='voice'){
                 $data[] = [
-                    "openid" => $obj->FromUserName,
+                    "openid" => $obj->ToUserName,
                     "add_time"=>$obj->CreateTime,
                     "msg_type"=>$obj->MsgType,
                     "media_id"=>$obj->MediaId,
