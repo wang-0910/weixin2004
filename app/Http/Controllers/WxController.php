@@ -59,6 +59,7 @@ class WxController extends Controller
                      "media_id"=>$obj->MediaId,
                      "media_type"=>$obj->MsgType
                 ];
+                    $this->material($obj->MediaId);
                     $media = Media::insert($data);
             }else if($obj->MsgType=='video'){
                 $data[] = [
@@ -69,6 +70,7 @@ class WxController extends Controller
                     'thumb' => $obj->ThumbMediaId,
                     'msg_id'=>$obj->MsgId
                 ];
+                    $this->material($obj->MediaId);
                     $media = Media::insert($data);
             }else if($obj->MsgType=='voice'){
                 $data[] = [
@@ -81,6 +83,7 @@ class WxController extends Controller
                     'recognition' => $obj->Recognition
 
                 ];
+                    $this->material($obj->MediaId);
                     $media = Media::insert($data);
             }
 
@@ -141,7 +144,26 @@ class WxController extends Controller
      */
 
      public function material($media_id){
-        
+        $access_token = $this->getAccessToken();
+        $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$access_token.'&media_id='.$media_id;
+        $client = new client();
+        $response = $client->get($url);
+        // 得到头部信息
+        // 从头部信息中取出文件名 将文件名处理为字符串
+        $file_name = $response->getHeader('Content-disposition')[0];
+
+        $file_type = 'static/'.$response->getHeader('Content-Type')[0];
+//        Log::info("=====file_type=====".$file_type);
+        // 判断有无 文件夹 没有 则创建多层文件夹
+        $adddir=$file_type.date("/Ymd/",time());
+        if(!is_dir($adddir)){
+            mkdir($adddir, 0777,true);
+            chmod($adddir, 0777);
+        }
+        $file_name = ltrim($file_name,"attachment; filename=\"");
+        $file_name = rtrim($file_name,'"');
+        $file_path = $adddir.$file_name;
+        $client->get($url,['save_to'=>$file_path]);
 
      }
      
