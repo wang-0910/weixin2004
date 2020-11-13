@@ -256,13 +256,13 @@ class WxController extends Controller
             "button"=>
             [
                 [
-                    "type"=>"view",
-                    "name"=> "搜索",
-                    "url"=>"http://www.baidu.com"
+                    "type"=>"click",
+                    "name"=> "签到",
+                    "key"=>""
                 ],
 
                 [
-                    "name" => "娱乐",
+                    "name" => "菜单",
                     "sub_button" => 
                 [
                     [
@@ -289,6 +289,9 @@ class WxController extends Controller
         
 
    }
+
+
+  
 
   /**
    * 过滤http协议
