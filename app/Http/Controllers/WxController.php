@@ -258,7 +258,7 @@ class WxController extends Controller
                 [
                     "type"=>"click",
                     "name"=> "签到",
-                    "key"=>""
+                    "key"=>"V1001_TODAY_QQ"
                 ],
 
                 [
