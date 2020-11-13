@@ -87,7 +87,7 @@ class WxController extends Controller
                     $media = Media::insert($data);
             }else if($obj->Event=="CLICK"){
                 if($obj->EventKey=="V1001_TODAY_QQ"){
-                    $key = '123';
+                    $key = '1233455';
                     $openid = $obj->ToUserName;
                     $slsmember = Redis::sismember($key,$openid);
                     if($slsmember=='1'){
