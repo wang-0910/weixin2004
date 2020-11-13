@@ -85,6 +85,20 @@ class WxController extends Controller
                 ];
                     $this->material($obj->MediaId);
                     $media = Media::insert($data);
+            }else if($obj->Event=="CLICK"){
+                if($obj->EventKey=="V1001_TODAY_QQ"){
+                    $key = '123';
+                    $openid = $obj->ToUserName;
+                    $slsmember = Redis::sismember($key,$openid);
+                    if($slsmember=='1'){
+                        $content = "已签到";
+                        $this->checkText($obj,$content);
+                    }else{
+                        $content = "签到成功";
+                        Redis::sAdd($key,$openid);
+                        $this->checkText($obj,$content);
+                    }
+                }
             }
 
 
