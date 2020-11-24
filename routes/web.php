@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 //Route::get('/Token','test\TestController@token');//测试接入
 Route::post('/index','WxController@index');//接入
 
@@ -23,5 +24,17 @@ Route::any('/token',"WxController@getAccressToken");//获取access_token
 Route::get('/create_menu','WxController@create_menu');//添加菜单
 Route::get('/weather','WxController@weather');//天气
 
+//测试登录
+
+
+Route::prefix('/api')->group(function(){
+    Route::get('/test','ApiController@test');
+    Route::get('/login',"ApiController@login");
+    Route::get('/goods',"ApiController@goods");
+    Route::get('/goodslist  ',"ApiController@goodsList");
+    Route::get('/goodsdetail',"ApiController@goodsDetail");
+    Route::get('/xcxlogin','ApiController@xcxlogin');//接入
+
+});
 
  
