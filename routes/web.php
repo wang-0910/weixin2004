@@ -23,7 +23,7 @@ Route::post('/wxEvent','WxController@wxEvent');//消息推送
 Route::any('/token',"WxController@getAccressToken");//获取access_token
 Route::get('/create_menu','WxController@create_menu');//添加菜单
 Route::get('/weather','WxController@weather');//天气
-Route::any('/pinyin','WxController@pinyin');//天气
+// Route::any('/pinyin','WxController@pinyin');//天气
 
 //测试登录
 
