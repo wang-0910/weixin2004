@@ -100,21 +100,11 @@ class WxController extends Controller
                     }
                 }
             }else if($obj->MsgType=="text"){
-                $openid = $obj->ToUserName;
-                $content = $obj->Content;
-                $key = '6bcb5167eff3c1f78fc5c97bdc67d265';
-                $url = "http://api.tianapi.com/txapi/pinyin/index?key=".$key."&text=".$content;
-                $data = file_get_contents($url);
-                $res = json_decode($data,true);
-                if($res['code'] == 200){ //判断状态码
-                    $this->checkText($obj,$content);
-                    Redis::sAdd($key,$openid);
-                }else{	
-                    echo "返回错误，状态消息：".$res['msg'];
-                }
+                $content = $this->pinyin();
+                $this->checkText($obj,$content);
             }
-
-
+        
+    
 
 
 
@@ -336,6 +326,24 @@ class WxController extends Controller
             return $output;
      }
     
+
+     public function pinyin(){
+
+        //  dd($content);
+        $key = '6bcb5167eff3c1f78fc5c97bdc67d265';
+        $url = "http://api.tianapi.com/txapi/pinyin/index?key=".$key."&text=".$content;
+        $data = file_get_contents($url);
+        $res = json_decode($data,true);
+        if($res['code'] == 200){ //判断状态码
+            $content = "";
+            foreach($res['newslist'] as $k=>$v ){
+                $content .= $v['pinyin']+"$content";
+            }
+            return $content;
+      }else{	
+          echo "返回错误，状态消息：".$res['msg'];
+        }
+     }
     
      
 
