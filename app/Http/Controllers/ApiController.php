@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 use App\Xcx_user;
 use App\GoodsModel;
+use App\LoginModel;
+use App\CartModel;
 class ApiController extends Controller
 {
     public function test(){
@@ -35,7 +37,7 @@ class ApiController extends Controller
             }
             $token = sha1($res['openid'].$res['session_key'].mt_rand(0,999999));
             $redis_key = 'XCX_token'.$token;
-            Redis::set($redis_key,time());
+            Redis::set($redis_key,$res['openid']);
             Redis::expire($redis_key,7200);
             $response = [
                 'errno' => 0,
@@ -97,7 +99,62 @@ class ApiController extends Controller
         return $response;
     }
 
-    public function xcxlogin(){
+    public function xcxlogin(Request $request){
+        $code = Request()->code;
+        // echo $code;
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid=".env('WX_XCX_APPID')."&secret=".env('WX_XCX_SECRET')."&js_code=".$code."&grant_type=authorization_code";
+        $res = json_decode(file_get_contents($url),true);
+        // dd($res);
+        $openid = $res['openid'];
+        // dd($openid);
+        if(isset($res['errcode'])){
+            $open = [
+                'erron' => '5001',
+                'msg' =>'登陆失败'
+            ];
+        }else{
+            $token = md5($res['openid'].$res['session_key']);
+            // dd($token);
+            $userInfo = [
+                "user_id" => '123',
+                'user_name' => '张三',
+                'login_time' => time(),
+                'login_ip' => Request()->getClientIp(),
+                'access_token' => $token
+            ];
+            $key = "h:xcx:token";
+            $hass = Redis::hMset($key,$userInfo);
+            $times = Redis::expire($hass,7200);
+            $opens = LoginModel::where('openid',$openid)->first();
+            // echo $opens;
+            if(empty($opens)){
+                $data = [
+                    'openid'=>$openid
+                ];
+                $data = LoginModel::insert($res);
+            }
+        }
+    }
+
+
+    /**
+     * 加入购物车
+     */
+    public function cart(Request $request){
+        $goods_id = $request->post('goods_id');
+        $uid = $_SERVER['uid'];
+        $goods = GoodsModel::where('goods_id',$goods_id)->first();
+        // dd($uid);
+        $data = [
+            'goods_id'=>$goods['goods_id'],
+            'user_id'=>$uid,
+            'goods_number'=>1,
+            'add_time'=>time(),
+            'cart_price'=>$goods['shop_price'],
+        ];
+        // dd($data);
+        $cart = CartModel::insert($data);
+        
         
     }
 }

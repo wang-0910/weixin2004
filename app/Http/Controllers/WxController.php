@@ -99,6 +99,19 @@ class WxController extends Controller
                         $this->checkText($obj,$content);
                     }
                 }
+            }else if($obj->MsgType=="text"){
+                $openid = $obj->ToUserName;
+                $content = $obj->Content;
+                $key = '6bcb5167eff3c1f78fc5c97bdc67d265';
+                $url = "http://api.tianapi.com/txapi/pinyin/index?key=".$key."&text=".$content;
+                $data = file_get_contents($url);
+                $res = json_decode($data,true);
+                if($res['code'] == 200){ //判断状态码
+                    $this->checkText($obj,$content);
+                    Redis::sAdd($key,$openid);
+                }else{	
+                    echo "返回错误，状态消息：".$res['msg'];
+                }
             }
 
 
@@ -161,7 +174,7 @@ class WxController extends Controller
         $access_token = $this->getAccessToken();
         $url = 'https://api.weixin.qq.com/cgi-bin/media/get?access_token='.$access_token.'&media_id='.$media_id;
         $client = new client();
-        $response = $client->get($url);
+        $response = $client->get($url); 
         // 得到头部信息
         // 从头部信息中取出文件名 将文件名处理为字符串
         $file_name = $response->getHeader('Content-disposition')[0];
@@ -186,9 +199,10 @@ class WxController extends Controller
      * 天气
      */
     public function weather(){
-        $url = "http://api.k780.com:88/?app=weather.future&weaid=beijing&&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json";        $weather = file_get_contents($url);
+        $url = "http://api.k780.com:88/?app=weather.future&weaid=beijing&&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json";     
+        // $weather = file_get_contents($url);
         $weather = file_get_contents($url);
-        $weather = json_decode($weather,true);
+        $weather = json_decode($weather,true);  
        //dd($weather);
 
         if($weather['success']==1){
@@ -323,4 +337,6 @@ class WxController extends Controller
      }
     
     
+     
+
 }
