@@ -110,7 +110,8 @@ class WxController extends Controller
                 $content = $res['newslist'][0]['pinyin'];
                 // dd($content);
                 $data = [
-                    'Content' => $obj->$content
+                    'Content' => $obj->Content,
+                    'MsgId' => $obj->MsgId
                 ];
                 Redis::sAdd($key,$data);
                 echo $this->checkText($obj,$content);
